@@ -84,9 +84,6 @@ print(f"Serving from: {website_dir}")
 print(f"Starting server at http://localhost:{PORT}")
 print("Press Ctrl+C to stop the server")
 
-# Fix the address already in use error
-socketserver.TCPServer.allow_reuse_address = True
-
 try:
     with socketserver.TCPServer(("", PORT), LiveChatHandler) as httpd:
         httpd.serve_forever()

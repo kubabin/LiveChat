@@ -6,7 +6,7 @@ const scrollDownButton = document.getElementById("scroll-down-button");
 const chatApiUrl = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
   ? "/api/chat"
   : "https://api.kubabin.dev/chat";
-const SHOW_SEASON_TAB = true;
+const SHOW_SEASON_TAB = false;
 let currentView = "map";
 
 function applyTheme(theme) {
