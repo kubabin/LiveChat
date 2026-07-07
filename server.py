@@ -2,26 +2,19 @@
 """
 Simple HTTP server for hosting the website.
 Serves the website folder on localhost:8000 and proxies /api/chat.
-Supports hot-reloading by restarting itself when watched files change.
 """
 
 import http.server
 import mimetypes
 import os
 import socketserver
-import sys
-import threading
-import time
 import urllib.request
 from pathlib import Path
 
 
-website_dir = Path(__file__).resolve().parent / "website"
-server_file = Path(__file__).resolve()
+website_dir = Path(__file__).parent / "website"
 os.chdir(website_dir)
 PORT = 8000
-WATCH_INTERVAL_SECONDS = 1.0
-WATCHED_PATHS = [server_file, website_dir]
 
 
 class LiveChatHandler(http.server.SimpleHTTPRequestHandler):
@@ -87,57 +80,15 @@ class LiveChatHandler(http.server.SimpleHTTPRequestHandler):
                 return
 
 
-def collect_file_states(paths):
-    states = {}
-    for path in paths:
-        if not path.exists():
-            continue
+print(f"Serving from: {website_dir}")
+print(f"Starting server at http://localhost:{PORT}")
+print("Press Ctrl+C to stop the server")
 
-        if path.is_file():
-            states[path.resolve()] = (path.stat().st_mtime_ns, path.stat().st_size)
-            continue
+# Fix the address already in use error
+socketserver.TCPServer.allow_reuse_address = True
 
-        for root, dirs, files in os.walk(path):
-            dirs[:] = [name for name in dirs if name != "__pycache__"]
-            for filename in files:
-                file_path = Path(root, filename).resolve()
-                try:
-                    states[file_path] = (file_path.stat().st_mtime_ns, file_path.stat().st_size)
-                except FileNotFoundError:
-                    continue
-
-    return states
-
-
-def watch_for_changes():
-    previous_states = collect_file_states(WATCHED_PATHS)
-
-    while True:
-        time.sleep(WATCH_INTERVAL_SECONDS)
-        current_states = collect_file_states(WATCHED_PATHS)
-
-        if current_states != previous_states:
-            print("Detected changes, restarting server...")
-            os.execv(sys.executable, [sys.executable, str(server_file)] + sys.argv[1:])
-
-        previous_states = current_states
-
-
-def main():
-    print(f"Serving from: {website_dir}")
-    print(f"Starting server at http://localhost:{PORT}")
-    print("Press Ctrl+C to stop the server")
-
-    socketserver.TCPServer.allow_reuse_address = True
-
-    try:
-        with socketserver.TCPServer(("", PORT), LiveChatHandler) as httpd:
-            watcher = threading.Thread(target=watch_for_changes, daemon=True)
-            watcher.start()
-            httpd.serve_forever()
-    except KeyboardInterrupt:
-        print("\nServer stopped.")
-
-
-if __name__ == "__main__":
-    main()
+try:
+    with socketserver.TCPServer(("", PORT), LiveChatHandler) as httpd:
+        httpd.serve_forever()
+except KeyboardInterrupt:
+    print("\nServer stopped.")
