@@ -188,11 +188,11 @@ function activateView(view) {
   }
 
   const titles = {
-    map: "# Create: Assembly Line SMP",
-    chat: "# Create: Assembly Line SMP",
-    season: "# Create: Assembly Line SMP",
+    map: "Create: Assembly Line SMP",
+    chat: "Create: Assembly Line SMP",
+    season: "Create: Assembly Line SMP",
   };
-  pageTitle.textContent = titles[view] || "# Create: Assembly Line SMP";
+  pageTitle.textContent = titles[view] || "Create: Assembly Line SMP";
 }
 
 themeToggle.addEventListener("click", () => {
