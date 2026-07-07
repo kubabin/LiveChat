@@ -312,6 +312,12 @@ html, body {
   letter-spacing: 0.2px;
 }
 
+@media (max-width: 768px) {
+  .scroll-down-button__label {
+    display: none;
+  }
+}
+
 .scroll-down-button--visible {
   opacity: 1;
   transform: translateY(0);
