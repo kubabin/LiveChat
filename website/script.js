@@ -1,5 +1,23 @@
 const messagesEl = document.getElementById("messages");
 const pageTitle = document.getElementById("page-title");
+const themeToggle = document.getElementById("theme-toggle");
+const themeIcon = document.getElementById("theme-icon");
+const scrollDownButton = document.getElementById("scroll-down-button");
+
+function applyTheme(theme) {
+  document.documentElement.setAttribute("data-theme", theme);
+  const isDark = theme === "dark";
+  themeIcon.textContent = isDark ? "light_mode" : "dark_mode";
+  themeToggle.setAttribute("aria-label", isDark ? "Switch to light mode" : "Switch to dark mode");
+  localStorage.setItem("theme", theme);
+}
+
+function initializeTheme() {
+  const savedTheme = localStorage.getItem("theme");
+  const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+  const initialTheme = savedTheme || (prefersDark ? "dark" : "light");
+  applyTheme(initialTheme);
+}
 
 function getPlayerHeadUrl(username) {
   const safeName = encodeURIComponent(username.trim());
@@ -35,14 +53,33 @@ function clearMessages() {
   messagesEl.innerHTML = "";
 }
 
+function shouldAutoScroll() {
+  const threshold = 80;
+  return messagesEl.scrollHeight - messagesEl.scrollTop - messagesEl.clientHeight <= threshold;
+}
+
 function renderMessages(messages) {
+  const wasNearBottom = shouldAutoScroll();
   clearMessages();
   messages.forEach(renderMessage);
-  scrollToBottom();
+  if (wasNearBottom) {
+    scrollToBottom();
+  }
 }
 
 function scrollToBottom() {
   messagesEl.scrollTop = messagesEl.scrollHeight;
+  updateScrollButton();
+}
+
+function updateScrollButton() {
+  if (!messagesEl || !scrollDownButton) return;
+  const isNearBottom = shouldAutoScroll();
+  scrollDownButton.classList.toggle("scroll-down-button--visible", !isNearBottom);
+}
+
+function handleMessagesScroll() {
+  updateScrollButton();
 }
 
 function startChatPolling() {
@@ -116,15 +153,18 @@ async function loadLatestChat() {
     const messages = normalizeMessages(data).slice(-20);
     if (messages.length > 0) {
       renderMessages(messages);
-      scrollToBottom();
       return;
     }
   } catch (error) {
     console.warn("Unable to load live chat messages:", error);
   }
 
-  clearMessages();
-  scrollToBottom();
+  if (shouldAutoScroll()) {
+    clearMessages();
+    scrollToBottom();
+  } else {
+    clearMessages();
+  }
 }
 
 function activateView(view) {
@@ -147,6 +187,17 @@ function activateView(view) {
   pageTitle.textContent = titles[view] || "Create: Assembly Line SMP";
 }
 
+themeToggle.addEventListener("click", () => {
+  const nextTheme = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark";
+  applyTheme(nextTheme);
+});
+
+scrollDownButton.addEventListener("click", () => {
+  scrollToBottom();
+});
+
+messagesEl.addEventListener("scroll", handleMessagesScroll);
+
 // Nav rail selection and panel switching
 document.querySelectorAll(".nav-item").forEach((item) => {
   item.addEventListener("click", () => {
@@ -154,6 +205,8 @@ document.querySelectorAll(".nav-item").forEach((item) => {
   });
 });
 
+initializeTheme();
 activateView("map");
 loadLatestChat();
+updateScrollButton();
 startChatPolling();

@@ -44,7 +44,12 @@
 
   <!-- Main content -->
   <main class="content">
-    <h1 class="page-title" id="page-title">Create: Assembly Line SMP</h1>
+    <div class="content__header">
+      <h1 class="page-title" id="page-title">Create: Assembly Line SMP</h1>
+      <button class="icon-button" id="theme-toggle" type="button" aria-label="Toggle dark mode">
+        <span class="material-symbols-rounded" id="theme-icon">dark_mode</span>
+      </button>
+    </div>
 
     <section class="view-panel view-panel--active" data-view-panel="map">
       <iframe
@@ -60,6 +65,9 @@
         <div class="messages" id="messages">
           <!-- messages injected by script.js -->
         </div>
+        <button class="scroll-down-button" id="scroll-down-button" type="button" aria-label="Scroll to bottom">
+          <span class="material-symbols-rounded">keyboard_double_arrow_down</span>
+        </button>
       </section>
     </section>
 
