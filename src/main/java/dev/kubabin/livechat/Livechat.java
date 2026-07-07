@@ -38,8 +38,8 @@ public class Livechat {
     public void addMessage(String player, String message) {
         String timestamp = Clock.systemUTC().instant().toString();
         messageQueue.add(new ChatMessage(player, message, timestamp));
-        // Limit the queue size to 100 messages
-        if (messageQueue.size() > 100) {
+        // Limit the queue size
+        if (messageQueue.size() > Config.MAX_MESSAGES.get()) {
             messageQueue.removeFirst();
         }
     }
