@@ -2,23 +2,23 @@
 .venv/
 
 # MacOS DS_Store files
-mod/.DS_Store
+.DS_Store
 
 # Gradle cache folder
-mod/.gradle
+.gradle
 
 # Gradle build folder
-mod/build
+build
 
 # IntelliJ
-mod/out/
-mod/.idea
-mod/*.iml
+out/
+.idea
+*.iml
 # mpeltonen/sbt-idea plugin
-mod/.idea_modules/
+.idea_modules/
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
-mod/hs_err_pid*
+hs_err_pid*
 
 # Common working directory
-mod/run
+run
