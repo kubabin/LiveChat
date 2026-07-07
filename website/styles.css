@@ -17,8 +17,8 @@
 
   --md-corner-extra-large: 28px;
 
-  --font-display: "Google Sans Flex", "Roboto", sans-serif;
-  --font-body: "Roboto", sans-serif;
+  --font-display: "Google Sans Flex", "Google Sans", "Segoe UI Variable", "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-body: "Google Sans", "Segoe UI Variable", "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
   color-scheme: light;
 }
 
@@ -49,6 +49,8 @@ html, body {
   font-family: var(--font-body);
   color: var(--md-sys-color-on-surface);
   transition: background 0.2s ease, color 0.2s ease;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
 .material-symbols-rounded {
@@ -178,11 +180,11 @@ html, body {
 }
 
 .nav-item__label {
-  font-family: "Google Sans Flex", sans-serif;
+  font-family: var(--font-display) !important;
   font-optical-sizing: auto;
-  font-weight: 400;
+  font-weight: 500 !important;
   font-style: normal;
-  font-variation-settings: "slnt" 0, "wdth" 100, "GRAD" 0, "ROND" 100;
+  font-variation-settings: normal;
   font-size: 12px;
   letter-spacing: 0.5px;
   line-height: 16px;
@@ -201,11 +203,11 @@ html, body {
 }
 
 .page-title {
-  font-family: "Google Sans Flex", sans-serif;
+  font-family: var(--font-display) !important;
   font-optical-sizing: auto;
-  font-weight: 700;
+  font-weight: 600 !important;
   font-style: normal;
-  font-variation-settings: "slnt" 0, "wdth" 100, "GRAD" 0, "ROND" 100;
+  font-variation-settings: normal;
   font-size: 34px;
   line-height: 44px;
   letter-spacing: -0.25px;
@@ -346,11 +348,11 @@ html, body {
 }
 
 .message__author {
-  font-family: "Google Sans Flex", sans-serif;
+  font-family: var(--font-display);
   font-optical-sizing: auto;
   font-weight: 400;
   font-style: normal;
-  font-variation-settings: "slnt" 0, "wdth" 100, "GRAD" 0, "ROND" 100;
+  font-variation-settings: normal;
   font-size: 16px;
   line-height: 24px;
   letter-spacing: 0.5px;
@@ -381,11 +383,11 @@ html, body {
   min-height: 44px;
   padding: 8px 16px;
   border-radius: 20px 20px 20px 8px;
-  font-family: "Google Sans Flex", sans-serif;
+  font-family: var(--font-display);
   font-optical-sizing: auto;
   font-weight: 400;
   font-style: normal;
-  font-variation-settings: "slnt" 0, "wdth" 100, "GRAD" 0, "ROND" 100;
+  font-variation-settings: normal;
   font-size: 16px;
   line-height: 24px;
   letter-spacing: 0.5px;
