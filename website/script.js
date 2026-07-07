@@ -6,7 +6,7 @@ const scrollDownButton = document.getElementById("scroll-down-button");
 const chatApiUrl = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
   ? "/api/chat"
   : "https://api.kubabin.dev/chat";
-const SHOW_SEASON_TAB = true;
+const SHOW_SEASON_TAB = false;
 let currentView = "map";
 
 function applyTheme(theme) {
@@ -181,7 +181,16 @@ function updateSeasonTabVisibility() {
 
   const shouldShow = SHOW_SEASON_TAB;
   seasonNavItem.hidden = !shouldShow;
+  seasonNavItem.disabled = !shouldShow;
+  seasonNavItem.setAttribute("aria-hidden", shouldShow ? "false" : "true");
+  seasonNavItem.tabIndex = shouldShow ? 0 : -1;
+  seasonNavItem.style.pointerEvents = shouldShow ? "auto" : "none";
+  seasonNavItem.style.display = shouldShow ? "flex" : "none";
+
   seasonPanel.hidden = !shouldShow;
+  seasonPanel.setAttribute("aria-hidden", shouldShow ? "false" : "true");
+  seasonPanel.inert = !shouldShow;
+  seasonPanel.style.display = shouldShow ? "flex" : "none";
 }
 
 function activateView(view) {
