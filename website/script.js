@@ -3,6 +3,9 @@ const pageTitle = document.getElementById("page-title");
 const themeToggle = document.getElementById("theme-toggle");
 const themeIcon = document.getElementById("theme-icon");
 const scrollDownButton = document.getElementById("scroll-down-button");
+const chatApiUrl = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
+  ? "/api/chat"
+  : "https://api.kubabin.dev/chat";
 
 function applyTheme(theme) {
   document.documentElement.setAttribute("data-theme", theme);
@@ -145,7 +148,7 @@ function normalizeMessages(payload) {
 
 async function loadLatestChat() {
   try {
-    const response = await fetch("/api/chat");
+    const response = await fetch(chatApiUrl);
     if (!response.ok) {
       throw new Error(`Request failed with status ${response.status}`);
     }
