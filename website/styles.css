@@ -44,6 +44,8 @@ html, body {
   height: 100vh;
   width: 100%;
   overflow: hidden;
+  position: relative;
+  isolation: isolate;
 }
 
 /* ---------- Navigation Rail ---------- */
@@ -56,6 +58,8 @@ html, body {
   padding-top: 44px;
   gap: 28px;
   background: var(--md-sys-color-surface);
+  position: relative;
+  z-index: 2;
 }
 
 .nav-rail__fab {
@@ -132,6 +136,9 @@ html, body {
   display: flex;
   flex-direction: column;
   min-width: 0;
+  min-height: 0;
+  position: relative;
+  z-index: 1;
 }
 
 .page-title {
@@ -151,6 +158,64 @@ html, body {
   }
 }
 
+/* ---------- View panels ---------- */
+.view-panel {
+  flex: 1;
+  min-height: 0;
+  display: none;
+}
+
+.view-panel--active {
+  display: flex;
+}
+
+.view-panel[hidden] {
+  display: none !important;
+}
+
+.map-iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  border-radius: var(--md-corner-extra-large);
+  background: #FFFFFF;
+}
+
+.season-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 12px;
+  padding: 32px;
+  border-radius: var(--md-corner-extra-large);
+  background: var(--md-sys-color-surface-container-lowest);
+}
+
+.season-panel h2 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 28px;
+}
+
+.season-panel p {
+  margin: 0;
+  color: var(--md-sys-color-on-surface-variant);
+}
+
+.download-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 20px;
+  border-radius: 999px;
+  background: var(--md-sys-color-primary);
+  color: var(--md-sys-color-on-primary);
+  text-decoration: none;
+  font-weight: 500;
+}
+
 /* ---------- Conversation panel ---------- */
 .conversation {
   flex: 1;
@@ -160,6 +225,7 @@ html, body {
   flex-direction: column;
   overflow: hidden;
   min-height: 0;
+  width: 100%;
 }
 
 .messages {
@@ -193,8 +259,8 @@ html, body {
   height: 45px;
   border-radius: 50%;
   flex-shrink: 0;
-  background-size: cover;
-  background-position: center;
+  object-fit: cover;
+  display: block;
   background-color: var(--md-sys-color-secondary-container);
 }
 

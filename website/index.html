@@ -18,26 +18,22 @@
 
   <!-- Navigation Rail -->
   <nav class="nav-rail" aria-label="Primary">
-    <button class="nav-rail__fab" aria-label="Compose">
-      <span class="material-symbols-rounded">edit</span>
-    </button>
-
     <div class="nav-rail__items">
-      <button class="nav-item" data-selected="false">
+      <button class="nav-item" data-view="map" data-selected="true">
         <span class="nav-item__indicator">
           <span class="material-symbols-rounded">map</span>
         </span>
         <span class="nav-item__label">Map</span>
       </button>
 
-      <button class="nav-item" data-selected="true">
+      <button class="nav-item" data-view="chat" data-selected="false">
         <span class="nav-item__indicator">
           <span class="material-symbols-rounded nav-item__icon--filled">chat_bubble</span>
         </span>
         <span class="nav-item__label">Chat</span>
       </button>
 
-      <button class="nav-item" data-selected="false">
+      <button class="nav-item" data-view="season" data-selected="false">
         <span class="nav-item__indicator">
           <span class="material-symbols-rounded">calendar_month</span>
         </span>
@@ -48,25 +44,33 @@
 
   <!-- Main content -->
   <main class="content">
-    <h1 class="page-title">Create: Assembly Line SMP</h1>
+    <h1 class="page-title" id="page-title">Create: Assembly Line SMP</h1>
 
-    <section class="conversation" aria-label="Conversation">
-      <div class="messages" id="messages">
-        <!-- messages injected by script.js -->
+    <section class="view-panel view-panel--active" data-view-panel="map">
+      <iframe
+        class="map-iframe"
+        src="https://kubabin.dev"
+        title="Live map"
+        loading="eager"
+      ></iframe>
+    </section>
+
+    <section class="view-panel" data-view-panel="chat" hidden>
+      <section class="conversation" aria-label="Conversation">
+        <div class="messages" id="messages">
+          <!-- messages injected by script.js -->
+        </div>
+      </section>
+    </section>
+
+    <section class="view-panel" data-view-panel="season" hidden>
+      <div class="season-panel">
+        <h2>Season 1</h2>
+        <p>Download the Season 1 world archive.</p>
+        <a class="download-button" href="world.zip" download>
+          Download world.zip
+        </a>
       </div>
-
-      <form class="composer" id="composer">
-        <input
-          class="composer__input"
-          id="composer-input"
-          type="text"
-          placeholder="Message"
-          autocomplete="off"
-        />
-        <button class="composer__send" type="submit" aria-label="Send message">
-          <span class="material-symbols-rounded">send</span>
-        </button>
-      </form>
     </section>
   </main>
 
