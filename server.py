@@ -5,15 +5,15 @@ Serves the website folder on localhost:8000 and proxies /api/chat.
 """
 
 import http.server
+import mimetypes
 import os
 import socketserver
 import urllib.request
 from pathlib import Path
 
-# Change to the website directory
+
 website_dir = Path(__file__).parent / "website"
 os.chdir(website_dir)
-
 PORT = 8000
 
 
@@ -23,7 +23,33 @@ class LiveChatHandler(http.server.SimpleHTTPRequestHandler):
             self.serve_chat_proxy()
             return
 
-        super().do_GET()
+        self.serve_static_file()
+
+    def serve_static_file(self):
+        request_path = self.path.split("?", 1)[0]
+        if request_path in {"", "/"}:
+            target_path = website_dir / "index.html"
+        else:
+            target_path = website_dir / request_path.lstrip("/")
+
+        if not target_path.exists() or not target_path.is_file():
+            self.send_error(404, "File not found")
+            return
+
+        mime_type, _ = mimetypes.guess_type(str(target_path))
+        if mime_type is None:
+            mime_type = "application/octet-stream"
+
+        self.send_response(200)
+        self.send_header("Content-Type", mime_type)
+        self.send_header("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0")
+        self.send_header("Pragma", "no-cache")
+        self.send_header("Expires", "0")
+        self.send_header("Content-Length", str(target_path.stat().st_size))
+        self.end_headers()
+
+        with target_path.open("rb") as file_obj:
+            self.wfile.write(file_obj.read())
 
     def serve_chat_proxy(self):
         try:
