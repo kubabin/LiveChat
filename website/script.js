@@ -6,6 +6,8 @@ const scrollDownButton = document.getElementById("scroll-down-button");
 const chatApiUrl = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
   ? "/api/chat"
   : "https://api.kubabin.dev/chat";
+const SHOW_SEASON_TAB = false;
+let currentView = "map";
 
 function applyTheme(theme) {
   document.documentElement.setAttribute("data-theme", theme);
@@ -171,7 +173,24 @@ async function loadLatestChat() {
   }
 }
 
+function updateSeasonTabVisibility() {
+  const seasonNavItem = document.querySelector('.nav-item[data-view="season"]');
+  const seasonPanel = document.querySelector('.view-panel[data-view-panel="season"]');
+
+  if (!seasonNavItem || !seasonPanel) return;
+
+  const shouldShow = SHOW_SEASON_TAB;
+  seasonNavItem.hidden = !shouldShow;
+  seasonPanel.hidden = !shouldShow;
+}
+
 function activateView(view) {
+  if (!SHOW_SEASON_TAB && view === "season") {
+    view = "map";
+  }
+
+  currentView = view;
+
   document.querySelectorAll(".nav-item").forEach((item) => {
     const isActive = item.dataset.view === view;
     item.setAttribute("data-selected", isActive ? "true" : "false");
@@ -215,6 +234,7 @@ document.querySelectorAll(".nav-item").forEach((item) => {
 });
 
 initializeTheme();
+updateSeasonTabVisibility();
 activateView("map");
 loadLatestChat();
 updateScrollButton();
