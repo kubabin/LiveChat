@@ -2,7 +2,6 @@ package dev.kubabin.livechat;
 
 import com.google.gson.Gson;
 import com.mojang.logging.LogUtils;
-import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
@@ -11,6 +10,8 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.ServerChatEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import com.sun.net.httpserver.HttpServer;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent.PlayerLoggedOutEvent;
 import org.slf4j.Logger;
 
 import java.time.Clock;
@@ -28,13 +29,20 @@ public class Livechat {
     private final ArrayDeque<ChatMessage> messageQueue = new ArrayDeque<>();
     private final Gson gson = new Gson();
 
-    public Livechat(IEventBus modEventBus, ModContainer modContainer) {
+    public Livechat(ModContainer modContainer) {
         NeoForge.EVENT_BUS.register(this);
 
         // Register our mod's ModConfigSpec so that FML can create and load the config file for us
         modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
     }
-
+    public void addMessage(String player, String message) {
+        String timestamp = Clock.systemUTC().instant().toString();
+        messageQueue.add(new ChatMessage(player, message, timestamp));
+        // Limit the queue size
+        if (messageQueue.size() > Config.MAX_MESSAGES.get()) {
+            messageQueue.removeFirst();
+        }
+    }
     // You can use SubscribeEvent and let the Event Bus discover methods to call
     @SubscribeEvent
     public void onServerStarting(ServerStartingEvent event) {
@@ -68,12 +76,20 @@ public class Livechat {
         // Add the chat message to the queue
         String playerName = event.getPlayer().getName().getString();
         String message = event.getMessage().getString();
-        // Timestamp in ISO 8601 format
-        String timestamp = Clock.systemUTC().instant().toString();
-        messageQueue.add(new ChatMessage(playerName, message, timestamp));
-        // Limit the queue size to 100 messages
-        if (messageQueue.size() > 100) {
-            messageQueue.removeFirst();
-        }
+        addMessage(playerName, message);
+    }
+    @SubscribeEvent
+    public void onPlayerJoin(PlayerLoggedInEvent event) {
+        // Add a join message to the queue
+        String playerName = event.getEntity().getName().getString();
+        String message = playerName + " joined the game";
+        addMessage(playerName, message);
+    }
+    @SubscribeEvent
+    public void onPlayerLeave(PlayerLoggedOutEvent event) {
+        // Add a leave message to the queue
+        String playerName = event.getEntity().getName().getString();
+        String message = playerName + " left the game";
+        addMessage(playerName, message);
     }
 }
