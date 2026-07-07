@@ -1,3 +1,6 @@
+# Python virtual environment
+.venv/
+
 # MacOS DS_Store files
 mod/.DS_Store
 

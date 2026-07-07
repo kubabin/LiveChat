@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Create: Assembly Line SMP — LiveChat</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:wght@400;500;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" />
+
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<div class="app">
+
+  <!-- Navigation Rail -->
+  <nav class="nav-rail" aria-label="Primary">
+    <div class="nav-rail__items">
+      <button class="nav-item" data-view="map" data-selected="true">
+        <span class="nav-item__indicator">
+          <span class="material-symbols-rounded">map</span>
+        </span>
+        <span class="nav-item__label">Map</span>
+      </button>
+
+      <button class="nav-item" data-view="chat" data-selected="false">
+        <span class="nav-item__indicator">
+          <span class="material-symbols-rounded nav-item__icon--filled">chat_bubble</span>
+        </span>
+        <span class="nav-item__label">Chat</span>
+      </button>
+
+      <button class="nav-item" data-view="season" data-selected="false">
+        <span class="nav-item__indicator">
+          <span class="material-symbols-rounded">calendar_month</span>
+        </span>
+        <span class="nav-item__label">Season 1</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Main content -->
+  <main class="content">
+    <h1 class="page-title" id="page-title">Create: Assembly Line SMP</h1>
+
+    <section class="view-panel view-panel--active" data-view-panel="map">
+      <iframe
+        class="map-iframe"
+        src="https://kubabin.dev"
+        title="Live map"
+        loading="eager"
+      ></iframe>
+    </section>
+
+    <section class="view-panel" data-view-panel="chat" hidden>
+      <section class="conversation" aria-label="Conversation">
+        <div class="messages" id="messages">
+          <!-- messages injected by script.js -->
+        </div>
+      </section>
+    </section>
+
+    <section class="view-panel" data-view-panel="season" hidden>
+      <div class="season-panel">
+        <h2>Season 1</h2>
+        <p>Download the Season 1 world archive.</p>
+        <a class="download-button" href="world.zip" download>
+          Download world.zip
+        </a>
+      </div>
+    </section>
+  </main>
+
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
