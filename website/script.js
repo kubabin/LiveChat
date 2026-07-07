@@ -74,8 +74,9 @@ function scrollToBottom() {
 
 function updateScrollButton() {
   if (!messagesEl || !scrollDownButton) return;
+  const canScroll = messagesEl.scrollHeight > messagesEl.clientHeight + 1;
   const isNearBottom = shouldAutoScroll();
-  scrollDownButton.classList.toggle("scroll-down-button--visible", !isNearBottom);
+  scrollDownButton.classList.toggle("scroll-down-button--visible", canScroll && !isNearBottom);
 }
 
 function handleMessagesScroll() {
@@ -179,6 +180,10 @@ function activateView(view) {
     panel.classList.toggle("view-panel--active", isActive);
   });
 
+  if (view === "chat") {
+    window.requestAnimationFrame(updateScrollButton);
+  }
+
   const titles = {
     map: "Map",
     chat: "Create: Assembly Line SMP",
@@ -197,6 +202,7 @@ scrollDownButton.addEventListener("click", () => {
 });
 
 messagesEl.addEventListener("scroll", handleMessagesScroll);
+window.addEventListener("resize", updateScrollButton);
 
 // Nav rail selection and panel switching
 document.querySelectorAll(".nav-item").forEach((item) => {

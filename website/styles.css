@@ -287,21 +287,29 @@ html, body {
   position: absolute;
   right: 16px;
   bottom: 16px;
-  width: 48px;
-  height: 48px;
+  min-height: 48px;
+  padding: 0 14px;
   border: none;
-  border-radius: 50%;
+  border-radius: 999px;
   background: var(--md-sys-color-primary);
   color: var(--md-sys-color-on-primary);
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: 6px;
   cursor: pointer;
   box-shadow: 0 4px 12px var(--md-sys-color-shadow);
   opacity: 0;
   transform: translateY(8px);
   pointer-events: none;
   transition: opacity 0.2s ease, transform 0.2s ease;
+  z-index: 3;
+}
+
+.scroll-down-button__label {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
 }
 
 .scroll-down-button--visible {
