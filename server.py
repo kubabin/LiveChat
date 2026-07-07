@@ -39,14 +39,19 @@ class LiveChatHandler(http.server.SimpleHTTPRequestHandler):
                 self.send_header("Content-Length", str(len(body)))
                 self.end_headers()
                 self.wfile.write(body)
+        except (BrokenPipeError, ConnectionResetError):
+            return
         except Exception as exc:
             error_body = str(exc).encode("utf-8")
-            self.send_response(502)
-            self.send_header("Content-Type", "text/plain; charset=utf-8")
-            self.send_header("Access-Control-Allow-Origin", "*")
-            self.send_header("Content-Length", str(len(error_body)))
-            self.end_headers()
-            self.wfile.write(error_body)
+            try:
+                self.send_response(502)
+                self.send_header("Content-Type", "text/plain; charset=utf-8")
+                self.send_header("Access-Control-Allow-Origin", "*")
+                self.send_header("Content-Length", str(len(error_body)))
+                self.end_headers()
+                self.wfile.write(error_body)
+            except (BrokenPipeError, ConnectionResetError):
+                return
 
 
 print(f"Serving from: {website_dir}")
