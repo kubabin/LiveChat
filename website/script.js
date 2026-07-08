@@ -232,6 +232,11 @@ document.querySelectorAll(".nav-item").forEach((item) => {
     activateView(item.dataset.view);
   });
 });
+/* When a nav-item is selected, turn its icon FILL on */
+.nav-item[data-selected="true"] .material-symbols-outlined {
+  font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
 
 initializeTheme();
 updateSeasonTabVisibility();
