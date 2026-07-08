@@ -156,7 +156,7 @@ async function loadLatestChat() {
     }
 
     const data = await response.json();
-    const messages = normalizeMessages(data).slice(-20);
+    const messages = normalizeMessages(data).slice(-90); // Limit to the last 90 messages
     if (messages.length > 0) {
       renderMessages(messages);
       return;
@@ -203,7 +203,10 @@ function activateView(view) {
   });
 
   if (view === "chat") {
-    window.requestAnimationFrame(updateScrollButton);
+    window.requestAnimationFrame(() => {
+      scrollToBottom();
+      updateScrollButton();
+    });
   }
 
   const titles = {
