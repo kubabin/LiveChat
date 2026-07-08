@@ -17,8 +17,8 @@
 
   --md-corner-extra-large: 28px;
 
-  --font-display: "Google Sans Flex", "Google Sans", "Segoe UI Variable", "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-body: "Google Sans", "Segoe UI Variable", "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-display: "Google Sans Flex", "Segoe UI Variable", "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-body: "Google Sans Flex", "Segoe UI Variable", "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
   color-scheme: light;
 }
 
@@ -181,10 +181,8 @@ html, body {
 
 .nav-item__label {
   font-family: var(--font-display) !important;
-  font-optical-sizing: auto;
   font-weight: 500 !important;
-  font-style: normal;
-  font-variation-settings: normal;
+  font-variation-settings: "opsz" 12, "ROND" 100;
   font-size: 12px;
   letter-spacing: 0.5px;
   line-height: 16px;
@@ -204,10 +202,8 @@ html, body {
 
 .page-title {
   font-family: var(--font-display) !important;
-  font-optical-sizing: auto;
   font-weight: 600 !important;
-  font-style: normal;
-  font-variation-settings: normal;
+  font-variation-settings: "opsz" 40, "ROND" 100;
   font-size: 34px;
   line-height: 44px;
   letter-spacing: -0.25px;
@@ -349,10 +345,8 @@ html, body {
 
 .message__author {
   font-family: var(--font-display);
-  font-optical-sizing: auto;
   font-weight: 400;
-  font-style: normal;
-  font-variation-settings: normal;
+  font-variation-settings: "opsz" 16, "ROND" 100;
   font-size: 16px;
   line-height: 24px;
   letter-spacing: 0.5px;
@@ -384,10 +378,8 @@ html, body {
   padding: 8px 16px;
   border-radius: 20px 20px 20px 8px;
   font-family: var(--font-display);
-  font-optical-sizing: auto;
   font-weight: 400;
-  font-style: normal;
-  font-variation-settings: normal;
+  font-variation-settings: "opsz" 16, "ROND" 100;
   font-size: 16px;
   line-height: 24px;
   letter-spacing: 0.5px;
