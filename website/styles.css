@@ -531,3 +531,8 @@ html, body {
   .page-title { font-size: 20px; line-height: 26px; }
   .icon-button { width: 40px; height: 40px; }
 }
+
+/* When a nav-item is selected, turn its icon FILL on */
+.nav-item[data-selected="true"] .material-symbols-outlined {
+  font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
