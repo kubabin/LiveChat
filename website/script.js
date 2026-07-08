@@ -203,7 +203,10 @@ function activateView(view) {
   });
 
   if (view === "chat") {
-    window.requestAnimationFrame(updateScrollButton);
+    window.requestAnimationFrame(() => {
+      scrollToBottom();
+      updateScrollButton();
+    });
   }
 
   const titles = {
@@ -241,5 +244,3 @@ activateView("map");
 loadLatestChat();
 updateScrollButton();
 startChatPolling();
-// wait a second and scroll to bottom to ensure the chat is at the bottom on load
-setTimeout(scrollToBottom, 1000);
