@@ -16,11 +16,27 @@ website_dir = Path(__file__).parent / "website"
 os.chdir(website_dir)
 PORT = 8000
 
+ANALYTICS_TABLES = {
+    "daily_player_peaks",
+    "global_player_peaks",
+    "player_count_samples",
+    "player_stats",
+}
+
 
 class LiveChatHandler(http.server.SimpleHTTPRequestHandler):
     def do_GET(self):
         if self.path == "/api/chat":
             self.serve_chat_proxy()
+            return
+
+        request_path = self.path.split("?", 1)[0]
+        if request_path.startswith("/api/"):
+            table_name = request_path[len("/api/"):]
+            if table_name in ANALYTICS_TABLES:
+                self.serve_analytics_proxy(table_name)
+                return
+            self.send_error(404, "Unknown API table")
             return
 
         self.serve_static_file()
@@ -55,6 +71,34 @@ class LiveChatHandler(http.server.SimpleHTTPRequestHandler):
         try:
             req = urllib.request.Request(
                 "https://api.kubabin.dev/chat",
+                headers={"User-Agent": "Mozilla/5.0"},
+            )
+            with urllib.request.urlopen(req, timeout=15) as response:
+                body = response.read()
+                self.send_response(200)
+                self.send_header("Content-Type", "application/json")
+                self.send_header("Access-Control-Allow-Origin", "*")
+                self.send_header("Content-Length", str(len(body)))
+                self.end_headers()
+                self.wfile.write(body)
+        except (BrokenPipeError, ConnectionResetError):
+            return
+        except Exception as exc:
+            error_body = str(exc).encode("utf-8")
+            try:
+                self.send_response(502)
+                self.send_header("Content-Type", "text/plain; charset=utf-8")
+                self.send_header("Access-Control-Allow-Origin", "*")
+                self.send_header("Content-Length", str(len(error_body)))
+                self.end_headers()
+                self.wfile.write(error_body)
+            except (BrokenPipeError, ConnectionResetError):
+                return
+
+    def serve_analytics_proxy(self, table_name):
+        try:
+            req = urllib.request.Request(
+                f"https://raspi.kubabin.dev/api/{table_name}",
                 headers={"User-Agent": "Mozilla/5.0"},
             )
             with urllib.request.urlopen(req, timeout=15) as response:
