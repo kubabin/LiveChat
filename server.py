@@ -11,7 +11,10 @@ Serves two site variants on one process:
   /s1/...  -> website/s1 (unchanged content/URLs)
   /s2/...  -> website/s2 (season 2 URLs)
 
-"/" serves a small landing page with two buttons (Season 1 / Season 2).
+"/" serves website/index.html, a landing page with two buttons
+(Season 1 / Season 2) whose background crossfades between
+backgrounds/default.jpg, backgrounds/season1.jpg, and
+backgrounds/season2.jpg on hover (see landing.css / landing.js).
 
 s1's tab scripts call bare "/api/..." paths (unchanged from production,
 where the site is at domain root). Locally, since s1 lives under /s1/,
@@ -54,61 +57,19 @@ ANALYTICS_TABLES = {
     "player_stats",
 }
 
-LANDING_PAGE = """<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Create: Assembly Line SMP</title>
-<style>
-  body {
-    margin: 0;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 24px;
-    font-family: system-ui, -apple-system, sans-serif;
-    background: #121212;
-    color: #f2f2f2;
-  }
-  h1 { font-size: 1.5rem; margin: 0 0 8px; text-align: center; }
-  .buttons { display: flex; gap: 16px; }
-  a.button {
-    padding: 14px 28px;
-    border-radius: 8px;
-    background: #2d7dfa;
-    color: white;
-    text-decoration: none;
-    font-weight: 600;
-    font-size: 1rem;
-  }
-  a.button:hover { background: #1a63d9; }
-</style>
-</head>
-<body>
-  <h1>Create: Assembly Line SMP</h1>
-  <div class="buttons">
-    <a class="button" href="/s1/">Season 1</a>
-    <a class="button" href="/s2/">Season 2</a>
-  </div>
-</body>
-</html>
-"""
-
 
 class LiveChatHandler(http.server.SimpleHTTPRequestHandler):
     def do_GET(self):
         request_path = self.path.split("?", 1)[0]
 
         if request_path == "/":
-            body = LANDING_PAGE.encode("utf-8")
-            self.send_response(200)
-            self.send_header("Content-Type", "text/html; charset=utf-8")
-            self.send_header("Content-Length", str(len(body)))
-            self.end_headers()
-            self.wfile.write(body)
+            self.serve_root_static_file("/index.html")
+            return
+
+        # Landing page assets (index.html, landing.css, landing.js,
+        # backgrounds/*) live at the repo root, shared across s1 and s2.
+        if request_path in {"/landing.css", "/landing.js"} or request_path.startswith("/backgrounds/"):
+            self.serve_root_static_file(request_path)
             return
 
         # Bare "/s1" or "/s2" (no trailing slash) breaks relative asset
@@ -174,6 +135,34 @@ class LiveChatHandler(http.server.SimpleHTTPRequestHandler):
             return None, None
         remainder = "/" + parts[2] if len(parts) > 2 else "/"
         return parts[1], remainder
+
+    def serve_root_static_file(self, request_path):
+        """Serve files that live at website/ root (e.g. /backgrounds/*),
+        shared across both s1 and s2, not inside either site folder."""
+        target_path = base_dir / request_path.lstrip("/")
+
+        try:
+            target_path = target_path.resolve()
+            target_path.relative_to(base_dir.resolve())
+        except ValueError:
+            self.send_error(403, "Forbidden")
+            return
+
+        if not target_path.exists() or not target_path.is_file():
+            self.send_error(404, "File not found")
+            return
+
+        mime_type, _ = mimetypes.guess_type(str(target_path))
+        if mime_type is None:
+            mime_type = "application/octet-stream"
+
+        self.send_response(200)
+        self.send_header("Content-Type", mime_type)
+        self.send_header("Content-Length", str(target_path.stat().st_size))
+        self.end_headers()
+
+        with target_path.open("rb") as file_obj:
+            self.wfile.write(file_obj.read())
 
     def serve_static_file(self, site, remainder):
         site_dir = site["dir"]
