@@ -1,0 +1,41 @@
+/* ---------- Season tab (disabled example) ---------- */
+.season-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 12px;
+  padding: 32px;
+  border-radius: var(--md-corner-extra-large);
+  background: var(--md-sys-color-surface-container-lowest);
+}
+
+.season-panel h2 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 28px;
+}
+
+.season-panel p {
+  margin: 0;
+  color: var(--md-sys-color-on-surface-variant);
+}
+
+.download-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 20px;
+  border-radius: 999px;
+  background: var(--md-sys-color-primary);
+  color: var(--md-sys-color-on-primary);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+@media (max-width: 768px) {
+  .season-panel {
+    border-radius: 20px;
+  }
+}

@@ -3,133 +3,30 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Create: Assembly Line SMP — LiveChat</title>
-
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:opsz,wght,ROND@6..144,100..700,100&display=swap" rel="stylesheet">
-
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" />
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" />
-
-<link rel="stylesheet" href="./styles.css?v=2" />
+<title>Assembly Line SMP</title>
+<link rel="stylesheet" href="landing.css" />
 </head>
 <body>
 
-<div class="app">
+  <div class="bg-layer bg-default"></div>
+  <div class="bg-layer bg-season1"></div>
+  <div class="bg-layer bg-season2"></div>
+  <div class="bg-overlay"></div>
 
-  <!-- Navigation Rail -->
-  <nav class="nav-rail" aria-label="Primary">
-    <div class="nav-rail__items">
-      <button class="nav-item" data-view="map" data-selected="true">
-        <span class="nav-item__indicator">
-          <span class="material-symbols-outlined">map</span>
-        </span>
-        <span class="nav-item__label">Map</span>
-      </button>
-
-      <button class="nav-item" data-view="chat" data-selected="false">
-        <span class="nav-item__indicator">
-          <span class="material-symbols-outlined">chat_bubble</span>
-        </span>
-        <span class="nav-item__label">Chat</span>
-      </button>
-
-      <button class="nav-item" data-view="analytics" data-selected="false">
-        <span class="nav-item__indicator">
-          <span class="material-symbols-outlined">bar_chart</span>
-        </span>
-        <span class="nav-item__label">Analytics</span>
-      </button>
-
-    </div>
-  </nav>
-
-  <!-- Main content -->
   <main class="content">
-    <div class="content__header">
-      <h1 class="page-title" id="page-title">Create: Assembly Line SMP</h1>
-      <button class="icon-button" id="theme-toggle" type="button" aria-label="Toggle dark mode">
-        <span class="material-symbols-rounded" id="theme-icon">dark_mode</span>
-      </button>
+    <h1>Assembly Line SMP</h1>
+    <div class="seasons">
+      <a class="season" data-season="season1" href="/s1/">
+        <span class="badge">1</span>
+        <span class="label">Season 1</span>
+      </a>
+      <a class="season" data-season="season2" href="/s2/">
+        <span class="badge">2</span>
+        <span class="label">Season 2</span>
+      </a>
     </div>
-
-    <section class="view-panel view-panel--active" data-view-panel="map">
-      <iframe
-        class="map-iframe"
-        src="https://kubabin.dev/map"
-        title="Live map"
-        loading="eager"
-      ></iframe>
-    </section>
-
-    <section class="view-panel" data-view-panel="chat" hidden>
-      <section class="conversation" aria-label="Conversation">
-        <div class="messages" id="messages">
-          <!-- messages injected by script.js -->
-        </div>
-        <button class="scroll-down-button" id="scroll-down-button" type="button" aria-label="Scroll to bottom">
-          <span class="material-symbols-rounded">keyboard_double_arrow_down</span>
-          <span class="scroll-down-button__label">Scroll down</span>
-        </button>
-      </section>
-    </section>
-
-    <section class="view-panel" data-view-panel="analytics" hidden>
-      <div class="analytics" id="analytics">
-
-        <section class="analytics__block" data-table="global_player_peaks">
-          <div class="analytics__block-head">
-            <h2 class="analytics__title">All-Time Peak</h2>
-            <p class="analytics__subtitle">The single highest concurrent player count ever recorded.</p>
-          </div>
-          <div class="analytics__stat-wrap" data-stat-wrap="global_player_peaks">
-            <p class="analytics__status">Loading…</p>
-          </div>
-        </section>
-
-        <section class="analytics__block" data-table="daily_player_peaks">
-          <div class="analytics__block-head">
-            <h2 class="analytics__title">Daily Peaks</h2>
-            <p class="analytics__subtitle">Highest concurrent players reached each day.</p>
-          </div>
-          <div class="analytics__chart-wrap" data-chart-wrap="daily_player_peaks">
-            <p class="analytics__status">Loading…</p>
-            <canvas data-chart-canvas="daily_player_peaks" hidden></canvas>
-          </div>
-        </section>
-
-        <section class="analytics__block" data-table="player_count_samples">
-          <div class="analytics__block-head">
-            <h2 class="analytics__title">Live Player Count Samples</h2>
-            <p class="analytics__subtitle">Recent snapshots of how many players were online.</p>
-          </div>
-          <div class="analytics__chart-wrap" data-chart-wrap="player_count_samples">
-            <p class="analytics__status">Loading…</p>
-            <canvas data-chart-canvas="player_count_samples" hidden></canvas>
-          </div>
-        </section>
-
-        <section class="analytics__block" data-table="player_stats">
-          <div class="analytics__block-head">
-            <h2 class="analytics__title">Player Stats</h2>
-            <p class="analytics__subtitle">First join and last seen dates for every player.</p>
-          </div>
-          <div class="analytics__table-wrap" data-table-wrap="player_stats">
-            <p class="analytics__status">Loading…</p>
-          </div>
-        </section>
-
-      </div>
-    </section>
-
   </main>
 
-</div>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
-<script src="./script.js"></script>
+  <script src="landing.js"></script>
 </body>
 </html>
