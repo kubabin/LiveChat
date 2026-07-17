@@ -255,6 +255,34 @@ class LiveChatHandler(http.server.SimpleHTTPRequestHandler):
             except (BrokenPipeError, ConnectionResetError):
                 return
 
+    def serve_analytics_proxy(self, table_name):
+        try:
+            req = urllib.request.Request(
+                f"https://raspi.kubabin.dev/api/{table_name}",
+                headers={"User-Agent": "Mozilla/5.0"},
+            )
+            with urllib.request.urlopen(req, timeout=15) as response:
+                body = response.read()
+                self.send_response(200)
+                self.send_header("Content-Type", "application/json")
+                self.send_header("Access-Control-Allow-Origin", "*")
+                self.send_header("Content-Length", str(len(body)))
+                self.end_headers()
+                self.wfile.write(body)
+        except (BrokenPipeError, ConnectionResetError):
+            return
+        except Exception as exc:
+            error_body = str(exc).encode("utf-8")
+            try:
+                self.send_response(502)
+                self.send_header("Content-Type", "text/plain; charset=utf-8")
+                self.send_header("Access-Control-Allow-Origin", "*")
+                self.send_header("Content-Length", str(len(error_body)))
+                self.end_headers()
+                self.wfile.write(error_body)
+            except (BrokenPipeError, ConnectionResetError):
+                return
+
 
 print(f"Serving s1 from: {SITES['s1']['dir']}")
 print(f"Serving s2 from: {SITES['s2']['dir']}")
