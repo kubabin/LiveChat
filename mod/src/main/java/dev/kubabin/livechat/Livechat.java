@@ -14,6 +14,7 @@ import net.neoforged.neoforge.event.entity.player.PlayerEvent.PlayerLoggedInEven
 import net.neoforged.neoforge.event.entity.player.PlayerEvent.PlayerLoggedOutEvent;
 import org.slf4j.Logger;
 
+import java.io.InputStream;
 import java.time.Clock;
 import java.util.ArrayDeque;
 
@@ -54,6 +55,29 @@ public class Livechat {
                 exchange.getResponseHeaders().add("Content-Type", "application/json");
                 exchange.sendResponseHeaders(200, response.getBytes().length);
                 exchange.getResponseBody().write(response.getBytes());
+                exchange.close();
+            });
+            httpServer.createContext("/api/chat", exchange -> {
+                String response = gson.toJson(messageQueue);
+                exchange.getResponseHeaders().add("Content-Type", "application/json");
+                exchange.sendResponseHeaders(200, response.getBytes().length);
+                exchange.getResponseBody().write(response.getBytes());
+                exchange.close();
+            });
+            // Serve other static files if needed
+            httpServer.createContext("/", exchange -> {
+                String path = exchange.getRequestURI().getPath();
+                InputStream is = Livechat.class.getResourceAsStream("/assets/livechat/web" + path);
+                LOGGER.info("Serving static file: {}", path);
+                if (is == null) {
+                    exchange.sendResponseHeaders(404, -1);
+                    exchange.close();
+                    return;
+                }
+                byte[] response = is.readAllBytes();
+                //exchange.getResponseHeaders().add("Content-Type", "text/plain");
+                exchange.sendResponseHeaders(200, response.length);
+                exchange.getResponseBody().write(response);
                 exchange.close();
             });
             httpServer.start();
