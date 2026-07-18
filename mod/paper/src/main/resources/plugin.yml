@@ -1,0 +1,6 @@
+name: livechat-paper
+version: '${version}'
+
+main: dev.kubabin.livechat.LiveChatPaper
+api-version: '1.21.1'
+load: POSTWORLD
