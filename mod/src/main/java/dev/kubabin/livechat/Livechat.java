@@ -2,6 +2,7 @@ package dev.kubabin.livechat;
 
 import com.google.gson.Gson;
 import com.mojang.logging.LogUtils;
+import com.sun.net.httpserver.HttpExchange;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
@@ -14,6 +15,7 @@ import net.neoforged.neoforge.event.entity.player.PlayerEvent.PlayerLoggedInEven
 import net.neoforged.neoforge.event.entity.player.PlayerEvent.PlayerLoggedOutEvent;
 import org.slf4j.Logger;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.time.Clock;
 import java.util.ArrayDeque;
@@ -44,29 +46,28 @@ public class Livechat {
             messageQueue.removeFirst();
         }
     }
+    private void chatEndpoint(HttpExchange exchange) throws IOException {
+        String response = gson.toJson(messageQueue);
+        exchange.getResponseHeaders().add("Content-Type", "application/json");
+        exchange.getResponseHeaders().add("Access-Control-Allow-Origin", "*"); // Allow CORS for all origins
+        exchange.sendResponseHeaders(200, response.getBytes().length);
+        exchange.getResponseBody().write(response.getBytes());
+        exchange.close();
+    }
     // You can use SubscribeEvent and let the Event Bus discover methods to call
     @SubscribeEvent
     public void onServerStarting(ServerStartingEvent event) {
         // Do something when the server starts
         try {
             httpServer = HttpServer.create(new java.net.InetSocketAddress(Config.socketHost, Config.socketPort), 0);
-            httpServer.createContext("/chat", exchange -> {
-                String response = gson.toJson(messageQueue);
-                exchange.getResponseHeaders().add("Content-Type", "application/json");
-                exchange.sendResponseHeaders(200, response.getBytes().length);
-                exchange.getResponseBody().write(response.getBytes());
-                exchange.close();
-            });
-            httpServer.createContext("/api/chat", exchange -> {
-                String response = gson.toJson(messageQueue);
-                exchange.getResponseHeaders().add("Content-Type", "application/json");
-                exchange.sendResponseHeaders(200, response.getBytes().length);
-                exchange.getResponseBody().write(response.getBytes());
-                exchange.close();
-            });
+            httpServer.createContext("/chat", this::chatEndpoint);
+            httpServer.createContext("/api/chat", this::chatEndpoint);
             // Serve other static files if needed
             httpServer.createContext("/", exchange -> {
                 String path = exchange.getRequestURI().getPath();
+                if (path.equals("/")) {
+                    path = "/index.html";
+                }
                 InputStream is = Livechat.class.getResourceAsStream("/assets/livechat/web" + path);
                 LOGGER.info("Serving static file: {}", path);
                 if (is == null) {
