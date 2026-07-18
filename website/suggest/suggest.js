@@ -135,7 +135,10 @@ function renderSearchResults(hits) {
 
   searchResultsEl.innerHTML = "";
   hits.forEach((hit) => {
-    const alreadyAdded = existingSlugs.has(hit.slug);
+    const alreadySuggested = existingSlugs.has(hit.slug);
+    const alreadyInPack = !!hit.already_in_pack;
+    const blocked = alreadySuggested || alreadyInPack;
+
     const row = document.createElement("div");
     row.className = "search-result";
     row.innerHTML = `
@@ -144,9 +147,10 @@ function renderSearchResults(hits) {
         <div class="search-result__title">${escapeHtml(hit.title)}</div>
         <div class="search-result__desc">${escapeHtml(hit.description || "")}</div>
       </div>
-      ${alreadyAdded ? `<span class="search-result__already">Already suggested</span>` : ""}
+      ${alreadyInPack ? `<span class="search-result__already">Already in modpack</span>` : ""}
+      ${!alreadyInPack && alreadySuggested ? `<span class="search-result__already">Already suggested</span>` : ""}
     `;
-    if (!alreadyAdded) {
+    if (!blocked) {
       row.addEventListener("click", () => submitSuggestion(hit));
     }
     searchResultsEl.appendChild(row);
@@ -171,7 +175,10 @@ async function submitSuggestion(hit) {
     });
 
     if (res.status === 409) {
-      showToast("That mod's already been suggested.");
+      const body = await res.json().catch(() => ({}));
+      showToast(body.detail === "Mod is already in the modpack"
+        ? "That mod's already in the modpack."
+        : "That mod's already been suggested.");
     } else if (!res.ok) {
       throw new Error("submit failed");
     } else {

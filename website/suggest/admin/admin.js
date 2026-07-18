@@ -82,7 +82,74 @@ function enterAdmin() {
   adminContent.style.display = "block";
   loadThreshold();
   loadAdminList();
+  loadExistingModsCount();
 }
+
+/* ---------- Existing mods (duplicate check) sync ---------- */
+const existingModsCountEl = document.getElementById("existing-mods-count");
+const syncModsBtn = document.getElementById("sync-mods-btn");
+const syncModsManualBtn = document.getElementById("sync-mods-manual-btn");
+const syncModsInput = document.getElementById("sync-mods-input");
+
+async function loadExistingModsCount() {
+  const res = await fetch(`${API_BASE}/admin/existing-mods`, { headers: authHeaders() });
+  if (!res.ok) {
+    existingModsCountEl.textContent = "Couldn't load.";
+    return;
+  }
+  const data = await res.json();
+  existingModsCountEl.textContent = `${data.count} mod${data.count === 1 ? "" : "s"} tracked as already in the pack.`;
+}
+
+async function runSync(button, url, body) {
+  const originalLabel = button.textContent;
+  button.disabled = true;
+  button.textContent = "Syncing…";
+  try {
+    const res = await fetch(url, {
+      method: "POST",
+      headers: { ...authHeaders(), ...(body ? { "Content-Type": "application/json" } : {}) },
+      body: body ? JSON.stringify(body) : undefined,
+    });
+    if (!res.ok) {
+      const errBody = await res.json().catch(() => ({}));
+      throw new Error(errBody.detail || "sync failed");
+    }
+    const data = await res.json();
+    showToast(`Synced ${data.synced} mod(s).${data.unresolved.length ? ` ${data.unresolved.length} couldn't be resolved.` : ""}`);
+    await loadExistingModsCount();
+  } catch (err) {
+    showToast(err.message || "Sync failed.");
+  } finally {
+    button.disabled = false;
+    button.textContent = originalLabel;
+  }
+}
+
+syncModsBtn.addEventListener("click", () => {
+  runSync(syncModsBtn, `${API_BASE}/admin/existing-mods/sync`);
+});
+
+syncModsManualBtn.addEventListener("click", () => {
+  const raw = syncModsInput.value.trim();
+  if (!raw) {
+    showToast("Paste some project IDs first.");
+    return;
+  }
+
+  let projectIds;
+  try {
+    projectIds = raw.trim().startsWith("[")
+      ? JSON.parse(raw)
+      : raw.split(/[\s,]+/).filter(Boolean);
+  } catch {
+    showToast("Couldn't parse that input.");
+    return;
+  }
+
+  runSync(syncModsManualBtn, `${API_BASE}/admin/existing-mods/sync-manual`, { project_ids: projectIds })
+    .then(() => { syncModsInput.value = ""; });
+});
 
 /* ---------- Threshold ---------- */
 const thresholdInput = document.getElementById("threshold-input");

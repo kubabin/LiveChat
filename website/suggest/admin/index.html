@@ -59,6 +59,31 @@
       </div>
     </section>
 
+    <section class="admin-settings">
+      <div class="admin-settings__row">
+        <div>
+          <h3>Existing mods (duplicate check)</h3>
+          <p class="suggest-header__subtitle" id="existing-mods-count">Loading…</p>
+        </div>
+        <div class="admin-settings__control">
+          <button id="sync-mods-btn" class="admin-button admin-button--small">Sync from Modrinth</button>
+        </div>
+      </div>
+      <p class="suggest-header__subtitle" style="margin-top:12px;">
+        Fetches the latest .mrpack from the modpack's Modrinth project automatically and updates
+        the duplicate-check list. Run this any time the modpack changes.
+      </p>
+      <details style="margin-top:10px;">
+        <summary style="cursor:pointer; font-size:13px; color:var(--md-sys-color-on-surface-variant);">Manual sync (paste project IDs instead)</summary>
+        <p class="suggest-header__subtitle" style="margin-top:8px;">
+          Only needed if the automatic fetch above can't be used. Paste Modrinth project IDs
+          (JSON array or one per line).
+        </p>
+        <textarea id="sync-mods-input" rows="4" style="width:100%; margin-top:8px; border-radius:12px; padding:10px; background:var(--md-sys-color-surface-container-high); color:var(--md-sys-color-on-surface); border:1px solid var(--md-sys-color-outline-variant); font-family:monospace; font-size:12px;"></textarea>
+        <button id="sync-mods-manual-btn" class="admin-button admin-button--small" style="margin-top:8px;">Sync pasted IDs</button>
+      </details>
+    </section>
+
     <section class="suggest-list-section">
       <div class="suggest-list-section__head">
         <h2 class="suggest-list-section__title">All Suggestions</h2>
