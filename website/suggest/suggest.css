@@ -228,6 +228,10 @@
   background: var(--md-sys-color-surface-container-lowest);
   border-radius: var(--md-corner-extra-large);
   padding: 16px 20px;
+  transition: background 0.2s ease;
+}
+.suggestion-card:hover {
+  background: var(--md-sys-color-surface-container-high);
 }
 
 .suggestion-card__icon {
@@ -259,7 +263,12 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  text-decoration: none;
 }
+.suggestion-card__title:hover {
+  text-decoration: underline;
+}
+
 
 .suggestion-card__badge {
   font-size: 11px;
