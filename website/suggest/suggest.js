@@ -243,7 +243,16 @@ function renderSuggestions() {
 function renderSuggestionCard(s) {
   const card = document.createElement("div");
   card.className = "suggestion-card";
+  if (s.modrinth_slug){
+    card.addEventListener("click", (event) => {
+      if (event.target.closest(".vote-control")) return; // don't navigate if clicking on vote buttons
+      window.open(`https://modrinth.com/mod/${s.modrinth_slug}`, "_blank");
+    });
+  }
+  
+  card.style.cursor = s.modrinth_slug ? "pointer" : "default";
 
+  console.log(s);
   const net = s.upvotes - s.downvotes;
   const userVote = s.your_vote; // "up" | "down" | null
 
