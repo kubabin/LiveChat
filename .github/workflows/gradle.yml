@@ -10,10 +10,8 @@ name: Java CI with Gradle
 on:
   push:
     branches: [ "master" ]
-    paths: [ 'mod/**' ]
   pull_request:
     branches: [ "master" ]
-    paths: [ 'mod/**' ]
 
 jobs:
   build:
@@ -38,4 +36,4 @@ jobs:
         dependency-graph: generate-and-submit
 
     - name: Build with Gradle Wrapper
-      run: cd mod && ./gradlew build
+      run: ./gradlew build
