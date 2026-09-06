@@ -6,6 +6,10 @@ public record ChatMessage(
         String timestamp
 ) {
     public String toJson() {
-        return String.format("{\"player\":\"%s\",\"message\":\"%s\",\"timestamp\":\"%s\"}", player, message, timestamp);
+        // Simple JSON "serialization", I'm too lazy to properly use GSON
+        return String.format("{\"player\":\"%s\",\"message\":\"%s\",\"timestamp\":\"%s\"}",
+                player,
+                message.replace("\"", "\\\""),
+                timestamp);
     }
 }

@@ -5,6 +5,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
+import net.neoforged.fml.loading.FMLPaths;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.ServerChatEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
@@ -47,13 +48,14 @@ public class LivechatNeoforge
         NeoForge.EVENT_BUS.register(this);
 
         // Register our mod's ModConfigSpec so that FML can create and load the config file for us
-        modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
+        modContainer.registerConfig(ModConfig.Type.COMMON, NeoforgeConfig.SPEC);
+        livechat.setGameDir(FMLPaths.GAMEDIR.get());
     }
 
     // You can use SubscribeEvent and let the Event Bus discover methods to call
     @SubscribeEvent
     public void onServerStarting(ServerStartingEvent event) {
-        livechat.startup(Config.host, Config.port, new NeoforgeLogger());
+        livechat.startup(NeoforgeConfig.host, NeoforgeConfig.port, new NeoforgeLogger());
     }
     @SubscribeEvent
     public void onServerStopping(ServerStoppingEvent event) {

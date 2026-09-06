@@ -21,12 +21,13 @@ subprojects {
 // Common classes appear in both source jars; duplicates are silently dropped.
 tasks.register('universalJar', Jar) {
     group = 'build'
-    description = 'Assembles a jar that works on both NeoForge and Paper.'
+    description = 'Assembles a jar that works on every supported platform.'
 
-    dependsOn ':neoforge:jar', ':paper:shadowJar'
+    dependsOn ':neoforge:jar', ':paper:shadowJar', ':fabric:jar'
 
     from zipTree(project(':neoforge').tasks.named('jar').get().archiveFile)
     from zipTree(project(':paper').tasks.named('shadowJar').get().archiveFile)
+    from zipTree(project(":fabric").tasks.named('jar').get().archiveFile)
 
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 

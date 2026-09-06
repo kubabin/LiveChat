@@ -2,9 +2,6 @@ plugins {
     id 'java-library'
 }
 
-group = 'dev.kubabin'
-version = '1.2'
-
 repositories {
     mavenCentral()
 }

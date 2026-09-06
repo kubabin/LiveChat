@@ -3,14 +3,19 @@ package dev.kubabin.livechat;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpServer;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayDeque;
 
 public class LivechatBase {
     private HttpServer httpServer;
     private final ArrayDeque<ChatMessage> messageQueue = new ArrayDeque<>();
     private UniversalLogger logger;
+    private Path webDir;
 
     public void startup(String host, int port, UniversalLogger logger) {
         this.logger = logger;
@@ -20,18 +25,30 @@ public class LivechatBase {
             httpServer.createContext("/api/chat", this::chatEndpoint);
             httpServer.createContext("/", exchange -> {
                 String path = exchange.getRequestURI().getPath();
-                if (path.equals("/")) {
+                if (path.isEmpty() || path.equals("/")) {
                     path = "/index.html";
                 }
-                InputStream is = LivechatBase.class.getResourceAsStream(path);
-                logger.info("Serving static file: " + path);
-                if (is == null) {
+                InputStream is = null;
+                try {
+                    Path safePath = safeResolve(webDir, path.substring(1));
+                    if (safePath == null){
+                        // The path wasn't safe.
+                        logger.warn("Unsafe path requested: "+path);
+                        exchange.sendResponseHeaders(400, -1);
+                        exchange.close();
+                        return;
+                    }
+                    is = new FileInputStream(safePath.toFile());
+                } catch (FileNotFoundException ignored) {}
+                if (is == null){
+                    is = LivechatBase.class.getResourceAsStream(path);
+                }
+                if (is == null){
                     exchange.sendResponseHeaders(404, -1);
                     exchange.close();
                     return;
                 }
                 byte[] response = is.readAllBytes();
-                //exchange.getResponseHeaders().add("Content-Type", "text/plain");
                 exchange.sendResponseHeaders(200, response.length);
                 exchange.getResponseBody().write(response);
                 exchange.close();
@@ -81,5 +98,21 @@ public class LivechatBase {
             httpServer.stop(0);
             logger.info("HTTP server stopped");
         }
+    }
+    private static Path safeResolve(Path baseDir, String userInput) {
+        Path base = baseDir.toAbsolutePath().normalize();
+        Path resolved = base.resolve(userInput).normalize();
+
+        if (!resolved.startsWith(base)) {
+            return null;
+        }
+
+        return resolved;
+    }
+    public void setGameDir(Path gameDir){
+        this.webDir = gameDir.resolve("livechat_web");
+        try {
+            Files.createDirectories(webDir);
+        } catch (IOException ignored) {}
     }
 }

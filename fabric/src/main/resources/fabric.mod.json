@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "id": "livechat",
+  "version": "1.0",
+
+  "name": "LiveChat",
+  "description": "View the realtime chat in your browser",
+  "authors": [],
+  "contact": {},
+
+  "license": "MIT",
+  "icon": "assets/livechat/icon.png",
+
+  "environment": "server",
+  "entrypoints": {
+    "main": ["dev.kubabin.livechat.LivechatFabric"]
+  },
+
+
+  "depends": {
+    "fabricloader": "*",
+    "fabric-api": "*",
+    "minecraft": "*"
+  }
+}

@@ -4,6 +4,10 @@ pluginManagement {
         gradlePluginPortal()
         maven { url = 'https://maven.neoforged.net/releases' }
         maven { url = 'https://repo.papermc.io/repository/maven-public/' }
+        maven {
+            name = 'Fabric'
+            url = 'https://maven.fabricmc.net/'
+        }
     }
 }
 
@@ -16,3 +20,4 @@ rootProject.name = 'LiveChat'
 include 'common'
 include 'neoforge'
 include 'paper'
+include 'fabric'
