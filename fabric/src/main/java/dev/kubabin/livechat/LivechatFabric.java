@@ -35,9 +35,7 @@ public class LivechatFabric implements ModInitializer {
         livechat.setGameDir(FabricLoader.getInstance().getGameDir());
         ServerPlayerEvents.JOIN.register(player -> livechat.onPlayerJoin(player.getScoreboardName()));
         ServerPlayerEvents.LEAVE.register(player -> livechat.onPlayerLeave(player.getScoreboardName()));
-        ServerMessageEvents.CHAT_MESSAGE.register((message, sender, params) -> {
-            livechat.onPlayerChat(sender.getScoreboardName(), message.signedContent());
-        });
+        ServerMessageEvents.CHAT_MESSAGE.register((message, sender, params) -> livechat.onPlayerChat(sender.getScoreboardName(), message.signedContent()));
         livechat.startup(config.host, config.port, logger);
     }
 
